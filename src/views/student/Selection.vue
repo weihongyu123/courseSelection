@@ -1,25 +1,28 @@
 <template>
   <a-tabs v-model:activeKey="activeKey">
     <a-tab-pane key="1" tab="课程选择">
-      <a-table :dataSource="dataSource" :columns="columns">
+      <a-table :dataSource="uncheckednData" :columns="columns">
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'action'">
             <span>
-              <a @click="onUpdate(record)">选课</a>
+              <a @click="onChecked(record)">选课</a>
             </span>
           </template>
           <template v-else-if="column.key === 'time'">
             <span> {{ record?.time?.map((e) => e?.value).join("、") }}</span>
           </template>
+          <template v-else-if="column.key === 'teacherName'">
+            <span> {{ record?.Teacher?.name }}</span>
+          </template>
         </template>
       </a-table>
     </a-tab-pane>
     <a-tab-pane key="2" tab="已选择课程" force-render>
-      <a-table :dataSource="dataSource" :columns="columns">
+      <a-table :dataSource="checkednData" :columns="columns">
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'action'">
             <span>
-              <a @click="onUpdate(record)">退课</a>
+              <a @click="onUnchecked(record)">退课</a>
             </span>
           </template>
           <template v-else-if="column.key === 'time'">
@@ -34,12 +37,8 @@
 
 
 <script lang="ts">
-import {
-  defineComponent,
-  onMounted,
-  ref,
-} from "vue";
-import { queryCourseList, saveCourse, deleteCourse } from "@/api/course";
+import { computed, defineComponent, onMounted, ref } from "vue";
+import { queryCourseList, saveCourse, deleteCourse } from "@/api/courseStudent";
 import type { FormInstance } from "ant-design-vue";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons-vue";
 
@@ -83,24 +82,46 @@ export default defineComponent({
         dataIndex: "code",
       },
       {
+        title: "教师",
+        key: "teacherName",
+        dataIndex: "teacherName",
+      },
+      {
         title: "操作",
         key: "action",
       },
     ];
 
-    const onUpdate = (row: FormState) => {
-    
+    const onChecked = (row: any) => {
+      saveCourse({
+        courseId: row?.id,
+        studentId: 12,
+      })
+        .then((res) => {
+          queryCourse();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     };
 
-    const onDelete = (row: any) => {
-    
+    const onUnchecked = (row: any) => {
+      deleteCourse({
+        id: row?.StudentCourses?.[0]?.id,
+      })
+        .then((res) => {
+          queryCourse();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     };
 
-    const dataSource = ref([]);
+    const dataSource = ref<any[]>([]);
 
     // 列表查询
     const queryCourse = () => {
-      queryCourseList({})
+      queryCourseList({ studentId: 12 })
         .then((res) => {
           if (res) dataSource.value = res.data;
         })
@@ -113,11 +134,20 @@ export default defineComponent({
       queryCourse();
     });
 
+    const checkednData = computed(() => {
+      return dataSource.value?.filter((e) => e?.StudentCourses?.length > 0);
+    });
+
+    const uncheckednData = computed(() => {
+      return dataSource.value?.filter((e) => e?.StudentCourses?.length === 0);
+    });
+
     return {
-      dataSource,
+      checkednData,
+      uncheckednData,
       columns,
-      onUpdate,
-      onDelete,
+      onChecked,
+      onUnchecked,
     };
   },
 });

@@ -9,6 +9,14 @@ export function queryTeacherList(params: any) {
     });
 }
 
+export function queryOne(params: any) {
+    return request({
+        url: '/api/teacher/queryOne',
+        method: 'get',
+        params
+    });
+}
+
 // 新增 & 修改 教师信息
 export function saveTeacher(params: any) {
     return request({

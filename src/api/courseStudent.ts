@@ -12,6 +12,25 @@ export function queryCourseList(params: any) {
     });
 }
 
+// 获取成绩列表
+export function queryResultList(params: any) {
+    return request({
+        url: '/api/studentCourse/queryResultList',
+        method: 'get',
+        params
+    });
+}
+
+
+// 批量更新成绩
+export function bunchUpdate(params: any) {
+    return request({
+        url: '/api/studentCourse/bunchUpdate',
+        method: 'post',
+        params
+    });
+}
+
 // 选课
 export function saveCourse(params: any) {
     return request({

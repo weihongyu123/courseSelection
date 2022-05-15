@@ -28,7 +28,24 @@ export const routes: Array<RouteRecordRaw> = [
   {
     path: '/teacher',
     name: '教师模块',
-    component: HomeView,
+    component: () => import(/* webpackChunkName: "about" */ '../views/teacher/Index.vue'),
+    children: [
+      {
+        path: 'info',
+        name: '教师信息',
+        component: () => import(/* webpackChunkName: "about" */ '../views/teacher/Info.vue'),
+      },
+      {
+        path: 'enterResults',
+        name: '录入成绩',
+        component: () => import(/* webpackChunkName: "about" */ '../views/teacher/enterResults.vue'),
+      },
+      {
+        path: 'open',
+        name: '开设课程',
+        component: () => import(/* webpackChunkName: "about" */ '../views/teacher/Open.vue'),
+      },
+    ],
   },
   {
     path: '/student',
@@ -37,7 +54,7 @@ export const routes: Array<RouteRecordRaw> = [
     children: [
       {
         path: 'info',
-        name: '个人信息',
+        name: '学生信息',
         component: () => import(/* webpackChunkName: "about" */ '../views/student/Info.vue'),
       },
       {

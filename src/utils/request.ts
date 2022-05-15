@@ -38,7 +38,6 @@ service.interceptors.response.use(
     if (res.code !== '200') {
       if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
         // to re-login
-
       }
       return Promise.reject(new Error(res.message || 'Error'));
     } else {

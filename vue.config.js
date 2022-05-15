@@ -6,7 +6,7 @@ module.exports = defineConfig({
     https: false, // 启用https
     proxy: {
       '/api': {
-        target: 'http://192.168.0.35:8082/',
+        target: 'http://localhost:8082/',
         changeOrigin: true,
         // secure: false,
         pathRewrite: {

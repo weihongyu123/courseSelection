@@ -1,11 +1,13 @@
 <template>
-  <div class="student">
+  <div class="teacher">
     <a-form
       :model="formState"
       :label-col="labelCol"
       :wrapper-col="wrapperCol"
       @finish="onFinish"
     >
+
+
       <a-form-item label="姓名">
         <a-input v-model:value="formState.name" />
       </a-form-item>
@@ -16,13 +18,13 @@
         </a-radio-group>
       </a-form-item>
       <a-form-item label="年龄">
-        <a-input-number v-model:value="formState.age"  :min="0" :max="200" />
+         <a-input-number v-model:value="formState.age"  :min="0" :max="200" />
       </a-form-item>
-      <a-form-item label="学号">
+      <a-form-item label="工号">
         <a-input v-model:value="formState.code" />
       </a-form-item>
-      <a-form-item label="专业">
-        <a-input v-model:value="formState.major" />
+      <a-form-item label="职称">
+        <a-input v-model:value="formState.title" />
       </a-form-item>
 
       <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
@@ -42,7 +44,7 @@ import {
   Ref,
   toRefs,
 } from "vue";
-import { queryOne, saveStudent } from "@/api/student";
+import { queryOne, saveTeacher } from "@/api/teacher";
 import type { FormInstance } from "ant-design-vue";
 import { message } from 'ant-design-vue';
 interface FormState {
@@ -50,7 +52,7 @@ interface FormState {
   age: number | undefined;
   code: number | undefined;
   gender: number;
-  major: string;
+  title: string;
 }
 
 export default defineComponent({
@@ -61,7 +63,7 @@ export default defineComponent({
       age: undefined,
       code: undefined,
       gender: 0,
-      major: "",
+      title: "",
     });
 
     const onUpdate = (row: FormState) => {
@@ -69,7 +71,7 @@ export default defineComponent({
     };
 
     const onFinish = () => {
-      saveStudent(formState.value)
+      saveTeacher(formState.value)
         .then((res) => {
           if (res) queryStudent();
           message.info('提交成功');

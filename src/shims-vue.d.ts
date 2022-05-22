@@ -1,3 +1,5 @@
+import { AxiosRequestConfig } from 'axios';
+
 /* eslint-disable */
 declare module '*.vue' {
   import type { DefineComponent } from 'vue'

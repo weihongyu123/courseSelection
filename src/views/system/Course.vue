@@ -53,6 +53,13 @@
         <a-form-item label="课程编码">
           <a-input v-model:value="formState.code" />
         </a-form-item>
+
+        <a-form-item label="任课老师">
+          <a-select
+            v-model:value="formState.teacherId"
+            :options="options"
+          ></a-select>
+        </a-form-item>
       </a-form>
     </a-modal>
   </div>
@@ -70,9 +77,9 @@ import {
   unref,
 } from "vue";
 import { queryCourseList, saveCourse, deleteCourse } from "@/api/course";
-import type { FormInstance } from "ant-design-vue";
+import { queryTeacherList } from "@/api/teacher";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons-vue";
-
+import type { SelectProps } from "ant-design-vue";
 interface Time {
   id: number;
   value: string;
@@ -83,6 +90,7 @@ interface FormState {
   time: Time[];
   place: string;
   code: number | undefined;
+  teacherId: number | undefined;
 }
 
 export default defineComponent({
@@ -123,6 +131,7 @@ export default defineComponent({
       time: [],
       place: "",
       code: undefined,
+      teacherId: undefined,
     });
 
     const onUpdate = (row: FormState) => {
@@ -164,6 +173,7 @@ export default defineComponent({
         time: [],
         place: "",
         code: undefined,
+        teacherId: undefined,
       };
     };
 
@@ -196,8 +206,25 @@ export default defineComponent({
         });
     };
 
+    const options = ref<SelectProps["options"]>([]);
+
+    const queryTeacher = () => {
+      queryTeacherList({})
+        .then((res) => {
+          if (res)
+            options.value = res.data.map((e: any) => ({
+              label: e.name,
+              value: e.id,
+            }));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+
     onMounted(() => {
       queryCourse();
+      queryTeacher();
     });
 
     return {
@@ -213,6 +240,7 @@ export default defineComponent({
       addTime,
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
+      options,
     };
   },
 });

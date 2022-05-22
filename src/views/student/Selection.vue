@@ -28,6 +28,9 @@
           <template v-else-if="column.key === 'time'">
             <span> {{ record?.time?.map((e) => e?.value).join("、") }}</span>
           </template>
+          <template v-else-if="column.key === 'teacherName'">
+            <span> {{ record?.Teacher?.name }}</span>
+          </template>
         </template>
       </a-table>
     </a-tab-pane>
@@ -107,7 +110,7 @@ export default defineComponent({
 
     const onUnchecked = (row: any) => {
       deleteCourse({
-        id: row?.StudentCourses?.[0]?.id,
+        id: row?.StudentCourse?.id,
       })
         .then((res) => {
           queryCourse();
@@ -135,11 +138,11 @@ export default defineComponent({
     });
 
     const checkednData = computed(() => {
-      return dataSource.value?.filter((e) => e?.StudentCourses?.length > 0);
+      return dataSource.value?.filter((e) => e?.StudentCourse !== null);
     });
 
     const uncheckednData = computed(() => {
-      return dataSource.value?.filter((e) => e?.StudentCourses?.length === 0);
+      return dataSource.value?.filter((e) => e?.StudentCourse === null);
     });
 
     return {

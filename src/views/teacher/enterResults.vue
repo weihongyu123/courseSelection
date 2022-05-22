@@ -19,16 +19,16 @@
           </span>
         </template>
         <template v-else-if="column.key === 'studentCode'">
-          <span> {{ record?.Student.code }}</span>
+          <span> {{ record?.Student?.code }}</span>
         </template>
         <template v-else-if="column.key === 'studentName'">
-          <span> {{ record?.Student.name }}</span>
+          <span> {{ record?.Student?.name }}</span>
         </template>
         <template v-else-if="column.key === 'courseCode'">
-          <span> {{ record?.Course.code }}</span>
+          <span> {{ record?.Course?.code }}</span>
         </template>
         <template v-else-if="column.key === 'courseName'">
-          <span> {{ record?.Course.name }}</span>
+          <span> {{ record?.Course?.name }}</span>
         </template>
       </template>
     </a-table>

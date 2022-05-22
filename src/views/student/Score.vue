@@ -1,18 +1,93 @@
 <template>
-  <div class="student">
-    <a-table :dataSource="data" :columns="columns" />
-  </div>
+  <a-table :dataSource="checkednData" :columns="columns">
+    <template #bodyCell="{ column, record }">
+      <template v-if="column.key === 'teacherName'">
+        <span> {{ record?.Teacher?.name }}</span>
+      </template>
+      <template v-if="column.key === 'result'">
+        <span> {{ record?.StudentCourse?.result }}</span>
+      </template>
+    </template>
+  </a-table>
 </template>
 
+
+
 <script lang="ts">
-import { defineComponent, onMounted, ref, reactive } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
+import { queryCourseList, saveCourse, deleteCourse } from "@/api/courseStudent";
+import type { FormInstance } from "ant-design-vue";
+import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons-vue";
+
+interface Time {
+  id: number;
+  value: string;
+}
+
+interface FormState {
+  name: string;
+  time: Time[];
+  place: string;
+  code: number | undefined;
+}
 
 export default defineComponent({
-  components: {},
+  components: {
+    MinusCircleOutlined,
+    PlusOutlined,
+  },
   setup() {
-    return {
+    const columns = [
+      {
+        title: "课程编码",
+        key: "code",
+        dataIndex: "code",
+      },
+      {
+        title: "课程",
+        dataIndex: "name",
+        key: "name",
+      },
+      {
+        title: "教师",
+        key: "teacherName",
+        dataIndex: "teacherName",
+      },
+      {
+        title: "成绩",
+        key: "result",
+        dataIndex: "result",
+      },
+    ];
 
+    const dataSource = ref<any[]>([]);
+
+    // 列表查询
+    const queryCourse = () => {
+      queryCourseList({ studentId: 12 })
+        .then((res) => {
+          if (res) dataSource.value = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+
+    onMounted(() => {
+      queryCourse();
+    });
+
+   const checkednData = computed(() => {
+      return dataSource.value?.filter((e) => e?.StudentCourse !== null);
+    });
+
+  
+    return {
+      checkednData,
+      columns,
     };
   },
 });
 </script>
+
+

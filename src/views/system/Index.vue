@@ -42,7 +42,7 @@ export default defineComponent({
   setup() {
     const rootPath = "/system";
     let menus = reactive<RouteRecordRaw[]>(
-      routes.find((e) => e.path === rootPath)?.children || []
+      routes[0].children?.find((e) => e.path === rootPath)?.children || []
     );
 
     const route = useRoute();

@@ -1,17 +1,20 @@
 import axios from 'axios';
 import store from '@/store';
-// import { getToken } from '@/utils/auth';
+import { getToken } from '@/utils/auth';
+
+
+axios.defaults.headers.post['token'] = 'application/x-www-form-urlencoded';
 
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
-  timeout: 5000 // request timeout
+  timeout: 5000,// request timeout
 });
 
 // request interceptor
 service.interceptors.request.use(
   config => {
     if (store.getters.token) {
-    //   config.headers['token'] = getToken();
+      config.headers!.token = getToken() || '';
     }
     return config;
   },

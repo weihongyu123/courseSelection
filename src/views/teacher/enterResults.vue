@@ -1,21 +1,13 @@
 <template>
   <div class="student">
     <a-space>
-      <a-button
-        type="primary"
-        @click="onSaveUpdate"
-        :disabled="changeRow.size === 0"
-        >保存成绩</a-button
-      >
+      <a-button type="primary" @click="onSaveUpdate" :disabled="changeRow.size === 0">保存成绩</a-button>
     </a-space>
     <a-table :dataSource="dataSource" :columns="columns">
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
           <span>
-            <a-input
-              v-model:value="record.result"
-              @change="() => rowChange(record)"
-            />
+            <a-input v-model:value="record.result" @change="() => rowChange(record)" />
           </span>
         </template>
         <template v-else-if="column.key === 'studentCode'">
@@ -47,6 +39,7 @@ import {
 } from "vue";
 
 import { queryResultList, bunchUpdate } from "@/api/courseStudent";
+import { useStore } from 'vuex'
 import { message } from "ant-design-vue";
 interface TableRow {
   Course: any;
@@ -86,6 +79,8 @@ export default defineComponent({
       },
     ];
 
+    const store = useStore()
+
     const dataSource = ref<TableRow[]>([]);
 
     const changeRow = ref(new Set());
@@ -109,7 +104,7 @@ export default defineComponent({
     };
 
     const queryStudent = () => {
-      queryResultList({ teacherId: 2 })
+      queryResultList({ teacherId: store.state.teacherId })
         .then((res) => {
           if (res) dataSource.value = res.data;
         })

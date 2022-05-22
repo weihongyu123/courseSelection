@@ -44,6 +44,7 @@ import { computed, defineComponent, onMounted, ref } from "vue";
 import { queryCourseList, saveCourse, deleteCourse } from "@/api/courseStudent";
 import type { FormInstance } from "ant-design-vue";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons-vue";
+import { useStore } from 'vuex'
 
 interface Time {
   id: number;
@@ -95,10 +96,13 @@ export default defineComponent({
       },
     ];
 
+
+    const store = useStore()
+
     const onChecked = (row: any) => {
       saveCourse({
         courseId: row?.id,
-        studentId: 12,
+        studentId: store.state.studentId
       })
         .then((res) => {
           queryCourse();
@@ -124,7 +128,7 @@ export default defineComponent({
 
     // 列表查询
     const queryCourse = () => {
-      queryCourseList({ studentId: 12 })
+      queryCourseList({ studentId: store.state.studentId})
         .then((res) => {
           if (res) dataSource.value = res.data;
         })

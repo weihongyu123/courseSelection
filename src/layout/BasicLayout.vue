@@ -2,45 +2,51 @@
     <a-layout class="layout">
         <a-layout-header>
             <div class="logo" />
-
-            <!-- 头部tab -->
-            <a-menu v-model:selectedKeys="selectedTab" theme="dark" mode="horizontal" :style="{ lineHeight: '64px' }">
-                <router-link v-for="route in routes[0]?.children" :to="route.path" :key="route.path">
-                    <a-menu-item :key="route.path">{{ route.name }}</a-menu-item>
-                </router-link>
-            </a-menu>
         </a-layout-header>
 
-        <router-view />
+        <a-layout>
+            <a-layout-sider width="200" style="background: #fff">
+                <a-menu v-model:selectedKeys="selectedKeys" mode="inline" :style="{ height: '100%', borderRight: 0 }">
+                    <router-link v-for="item in routes[0].children" :key="item.path" :to="item.path">
+                        <a-menu-item :key="item.path">
+                            <span> {{ item.name }}</span>
+                        </a-menu-item>
+                    </router-link>
+                </a-menu>
+            </a-layout-sider>
+            <a-layout style="padding: 0 24px 24px">
+                <a-layout-content :style="{
+                    background: '#fff',
+                    padding: '24px',
+                    margin: 0,
+                    minHeight: '280px',
+                }">
+                    <router-view />
+                </a-layout-content>
+            </a-layout>
+        </a-layout>
     </a-layout>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from "vue";
 import { routes } from "../router";
-import { RouteRecordRaw, useRoute } from "vue-router";
+import { RouteRecordRaw, useRoute, useRouter } from "vue-router";
+import { useStore } from 'vuex'
+
 
 export default defineComponent({
     setup() {
-        let selectedTab = ref<string[]>([""]);
+        
+        const store = useStore();
+        const router = useRouter()
+        const route = useRoute()
+
         let selectedKeys = ref<string[]>([""]);
-        const route = useRoute();
-
-        // let menuSider = ref<RouteRecordRaw[]>([]);
-
-        watch(route, (route) => {
-            // selectedKeys.value = [route.path];
-            selectedTab.value = [`/${route.path.split("/")?.[1]}`];
-        });
-
-        // watch(selectedTab, (selectedTab, prev) => {
-        //   menuSider.value =
-        //     routes.find((e) => e.path === selectedTab[0])?.children || [];
-        // });
 
         return {
-            selectedTab,
-            routes,
+            selectedKeys,
+            routes: computed(() => store.state.menus),
         };
     },
 });

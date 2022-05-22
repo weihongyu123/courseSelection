@@ -24,6 +24,7 @@ import {
 import { queryCourseList, saveCourse, deleteCourse } from "@/api/course";
 import type { FormInstance } from "ant-design-vue";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons-vue";
+import { useStore } from 'vuex'
 
 interface Time {
   id: number;
@@ -43,6 +44,8 @@ export default defineComponent({
     PlusOutlined,
   },
   setup() {
+    const store = useStore()
+
     const columns = [
       {
         title: "课程编码",
@@ -70,7 +73,7 @@ export default defineComponent({
 
     // 列表查询
     const queryCourse = () => {
-      queryCourseList({ teacherId: 2 })
+      queryCourseList({ teacherId: store.state.teacherId })
         .then((res) => {
           if (res) dataSource.value = res.data;
         })

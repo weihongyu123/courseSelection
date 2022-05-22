@@ -1,11 +1,6 @@
 <template>
   <div class="student">
-    <a-form
-      :model="formState"
-      :label-col="labelCol"
-      :wrapper-col="wrapperCol"
-      @finish="onFinish"
-    >
+    <a-form :model="formState" @finish="onFinish">
       <a-form-item label="姓名">
         <a-input v-model:value="formState.name" />
       </a-form-item>
@@ -16,7 +11,7 @@
         </a-radio-group>
       </a-form-item>
       <a-form-item label="年龄">
-        <a-input-number v-model:value="formState.age"  :min="0" :max="200" />
+        <a-input-number v-model:value="formState.age" :min="0" :max="200" />
       </a-form-item>
       <a-form-item label="学号">
         <a-input v-model:value="formState.code" />
@@ -44,6 +39,7 @@ import {
 } from "vue";
 import { queryOne, saveStudent } from "@/api/student";
 import type { FormInstance } from "ant-design-vue";
+import { useStore } from 'vuex'
 import { message } from 'ant-design-vue';
 interface FormState {
   name: string;
@@ -64,6 +60,8 @@ export default defineComponent({
       major: "",
     });
 
+    const store = useStore()
+
     const onUpdate = (row: FormState) => {
       formState.value = row;
     };
@@ -82,7 +80,7 @@ export default defineComponent({
     const dataSource = ref([]);
 
     const queryStudent = () => {
-      queryOne({ id: "2" })
+      queryOne({ id: store.state.studentId })
         .then((res) => {
           if (res) formState.value = res.data;
         })

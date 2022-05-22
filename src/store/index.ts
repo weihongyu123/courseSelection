@@ -23,14 +23,12 @@ export default createStore({
   actions: {
     async login({ commit }, userInfo) {
       const { userName, password } = userInfo;
-
-      console.log(userInfo)
       return login({ userName: userName.trim(), password: password }).then(response => {
         const { data } = response;
         commit('SET_TOKEN', data.token);
         setToken(data.token);
       }).catch(error => {
-
+        throw new Error()
       });
     }
   },

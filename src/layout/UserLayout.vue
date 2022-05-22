@@ -46,8 +46,7 @@ export default defineComponent({
         });
 
         const onFinish = (values: any) => {
-            store.dispatch('login', values).then(() => {
-                console.log(1233)
+            store.dispatch('login', values).then((res) => {
                 router.push({ path: '/' });
             }).catch(() => {
 

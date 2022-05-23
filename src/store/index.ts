@@ -31,6 +31,7 @@ export default createStore<{
     type: '',
     userName: '',
     menus: [],
+    id:'',
     teacherId: undefined,
     studentId: undefined,
   },
@@ -43,7 +44,6 @@ export default createStore<{
     SET_TOKEN: (state, data) => {
       state.token = data.token;
       state.type = data.type;
-
       if (data.type === 1) {
         const menu = [
           '/',
@@ -78,6 +78,8 @@ export default createStore<{
     SET_INFO: (state, info) => {
       state.teacherId = info.teacherId;
       state.studentId = info.studentId;
+      state.id = info.id;
+
     },
   },
   actions: {

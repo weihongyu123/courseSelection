@@ -10,16 +10,19 @@
             <a @click="onUpdate(record)">修改</a>
             <a-divider type="vertical" />
             <a @click="onDelete(record)">删除</a>
+            <a-divider type="vertical" />
+            <a @click="onUpdatePassword(record)">重置密码</a>
+          </span>
+        </template>
+        <template v-else-if="column.key === 'gender'">
+          <span>
+            {{ record.gender === 1 ? '男' : '女' }}
           </span>
         </template>
       </template>
     </a-table>
     <a-modal v-model:visible="visible" title="新增" @ok="handleOk">
-      <a-form
-        :model="formState"
-        :label-col="labelCol"
-        :wrapper-col="wrapperCol"
-      >
+      <a-form :model="formState" :label-col="labelCol" :wrapper-col="wrapperCol">
         <a-form-item label="姓名">
           <a-input v-model:value="formState.name" />
         </a-form-item>
@@ -33,7 +36,7 @@
           <a-input v-model:value="formState.age" />
         </a-form-item>
         <a-form-item label="学号">
-          <a-input v-model:value="formState.code" />
+          <a-input v-model:value="formState.code" :disabled="disabledCode" />
         </a-form-item>
         <a-form-item label="专业">
           <a-input v-model:value="formState.major" />
@@ -55,6 +58,8 @@ import {
 } from "vue";
 import { queryStudentList, saveStudent, deleteStudent } from "@/api/student";
 import type { FormInstance } from "ant-design-vue";
+import { updatePassword } from '@/api/user'
+import { message } from 'ant-design-vue';
 interface FormState {
   name: string;
   age: number | undefined;
@@ -109,6 +114,7 @@ export default defineComponent({
     const onUpdate = (row: FormState) => {
       formState.value = row;
       visible.value = true;
+      disabledCode.value = true;
     };
 
     const onDelete = (row: any) => {
@@ -122,9 +128,12 @@ export default defineComponent({
     };
 
     const visible = ref<boolean>(false);
+    const disabledCode = ref<boolean>(false);
+
 
     const showModal = () => {
       visible.value = true;
+      disabledCode.value = false;
       formState.value = {
         name: "",
         age: undefined,
@@ -162,6 +171,13 @@ export default defineComponent({
       queryStudent();
     });
 
+
+    const onUpdatePassword = (row: FormState) => {
+      updatePassword({ password: '123456', userName: row.code }).then(res => {
+        message.info('修改成功');
+      })
+    }
+
     return {
       dataSource,
       columns,
@@ -171,6 +187,10 @@ export default defineComponent({
       handleOk,
       onUpdate,
       onDelete,
+      disabledCode,
+      labelCol: { span: 4 },
+      wrapperCol: { span: 14 },
+      onUpdatePassword
     };
   },
 });

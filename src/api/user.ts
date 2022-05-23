@@ -8,3 +8,12 @@ export function login(params: any) {
         params
     });
 }
+
+export function updatePassword(params: any) {
+    return request({
+        url: '/api/user/updatePassword',
+        method: 'post',
+        params
+    });
+}
+

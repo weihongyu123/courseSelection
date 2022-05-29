@@ -1,5 +1,5 @@
 <template>
-  <a-tabs v-model:activeKey="activeKey">
+  <a-tabs>
     <a-tab-pane key="1" tab="课程选择">
       <a-table :dataSource="uncheckednData" :columns="columns">
         <template #bodyCell="{ column, record }">
@@ -96,13 +96,13 @@ export default defineComponent({
       },
     ];
 
-
     const store = useStore()
 
     const onChecked = (row: any) => {
       saveCourse({
         courseId: row?.id,
-        studentId: store.state.studentId
+        studentId: store.state.studentId,
+        result: 0
       })
         .then((res) => {
           queryCourse();

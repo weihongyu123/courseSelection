@@ -1,6 +1,6 @@
 <template>
   <div class="student">
-    <a-form :model="formState" @finish="onFinish">
+    <a-form :model="formState" @finish="onFinish" :label-col="labelCol" :wrapper-col="wrapperCol">
       <a-form-item label="姓名">
         <a-input v-model:value="formState.name" />
       </a-form-item>
@@ -14,10 +14,20 @@
         <a-input-number v-model:value="formState.age" :min="0" :max="200" />
       </a-form-item>
       <a-form-item label="学号">
-        <a-input v-model:value="formState.code" />
+        <a-input v-model:value="formState.code" disabled={true} />
       </a-form-item>
       <a-form-item label="专业">
         <a-input v-model:value="formState.major" />
+      </a-form-item>
+
+      <a-form-item label="手机号">
+        <a-input v-model:value="formState.phone" />
+      </a-form-item>
+      <a-form-item label="身份证号">
+        <a-input v-model:value="formState.identityNumber" />
+      </a-form-item>
+      <a-form-item label="地址">
+        <a-input v-model:value="formState.address" />
       </a-form-item>
 
       <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
@@ -47,6 +57,9 @@ interface FormState {
   code: number | undefined;
   gender: number;
   major: string;
+  phone: string;
+  identityNumber: string;
+  address: string;
 }
 
 export default defineComponent({
@@ -58,6 +71,9 @@ export default defineComponent({
       code: undefined,
       gender: 0,
       major: "",
+      phone: "",
+      identityNumber: "",
+      address: ""
     });
 
     const store = useStore()
@@ -98,6 +114,8 @@ export default defineComponent({
       formState,
       onFinish,
       onUpdate,
+      labelCol: { span: 4 },
+      wrapperCol: { span: 14 },
     };
   },
 });

@@ -2,9 +2,24 @@
   <div class="student">
     <a-space>
       <a-button type="primary" @click="showModal">添加</a-button>
+
+
+      <a-form layout="inline" :model="formParams" @finish="handleSearch">
+        <a-form-item>
+          <a-input v-model:value="formParams.name" placeholder="教师名称">
+          </a-input>
+        </a-form-item>
+
+        <a-form-item>
+          <a-button type="primary" html-type="submit">
+            查询
+          </a-button>
+        </a-form-item>
+      </a-form>
     </a-space>
     <a-table :dataSource="dataSource" :columns="columns">
       <template #bodyCell="{ column, record }">
+
         <template v-if="column.key === 'action'">
           <span>
             <a @click="onUpdate(record)">修改</a>
@@ -15,25 +30,20 @@
         <template v-else-if="column.key === 'time'">
           <span> {{ record?.time?.map((e) => e?.value).join("、") }}</span>
         </template>
+        <template v-else-if="column.key === 'teacherName'">
+          <span> {{ record?.Teacher?.name || '未指派教师' }}</span>
+        </template>
       </template>
     </a-table>
     <a-modal v-model:visible="visible" title="新增" @ok="handleOk">
-      <a-form
-        :model="formState"
-        :label-col="labelCol"
-        :wrapper-col="wrapperCol"
-      >
+      <a-form :model="formState" :label-col="labelCol" :wrapper-col="wrapperCol">
         <a-form-item label="课程">
           <a-input v-model:value="formState.name" />
         </a-form-item>
 
         <a-form-item label="上课时间">
-          <a-space
-            v-for="(t, index) in formState.time"
-            :key="t.id"
-            style="display: flex; margin-bottom: 8px"
-            align="baseline"
-          >
+          <a-space v-for="(t, index) in formState.time" :key="t.id" style="display: flex; margin-bottom: 8px"
+            align="baseline">
             <a-form-item :name="['time', index, 'value']">
               <a-input v-model:value="t.value" />
             </a-form-item>
@@ -55,10 +65,7 @@
         </a-form-item>
 
         <a-form-item label="任课老师">
-          <a-select
-            v-model:value="formState.teacherId"
-            :options="options"
-          ></a-select>
+          <a-select v-model:value="formState.teacherId" :options="options"></a-select>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -121,11 +128,17 @@ export default defineComponent({
         dataIndex: "code",
       },
       {
+        title: "教师名称",
+        key: "teacherName",
+        dataIndex: "teacherName",
+      },
+      {
         title: "操作",
         key: "action",
       },
     ];
 
+    // 添加form
     const formState = ref<FormState>({
       name: "",
       time: [],
@@ -133,6 +146,25 @@ export default defineComponent({
       code: undefined,
       teacherId: undefined,
     });
+
+
+    // 搜索form
+    const formParams = ref({
+      name: ""
+    });
+
+    const handleSearch = () => {
+
+      const params = {}
+
+      for (const [key, value] of Object.entries(formParams.value)) {
+        if (value !== '' && value !== null && value !== undefined) {
+          params[key] = value
+        }
+      }
+
+      queryCourse(params)
+    }
 
     const onUpdate = (row: FormState) => {
       formState.value = row;
@@ -183,9 +215,8 @@ export default defineComponent({
 
       const params: any = formState.value;
       params.time = JSON.stringify(formState.value.time);
+      params.TeacherId = params.teacherId
 
-
-    console.log(params)
 
       saveCourse(params)
         .then((res) => {
@@ -199,8 +230,8 @@ export default defineComponent({
     const dataSource = ref([]);
 
     // 列表查询
-    const queryCourse = () => {
-      queryCourseList({})
+    const queryCourse = (params?: any) => {
+      queryCourseList(params || {})
         .then((res) => {
           if (res) dataSource.value = res.data;
         })
@@ -244,6 +275,8 @@ export default defineComponent({
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       options,
+      formParams,
+      handleSearch,
     };
   },
 });

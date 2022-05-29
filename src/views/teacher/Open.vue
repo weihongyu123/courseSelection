@@ -5,9 +5,14 @@
         <template v-if="column.key === 'time'">
           <span> {{ record?.time?.map((e) => e?.value).join("、") }}</span>
         </template>
+        <template v-else-if="column.key === 'StudentsCount'">
+          <span> {{ record?.Students?.length || 0 }}</span>
+        </template>
       </template>
     </a-table>
   </div>
+
+
 </template>
 
 <script lang="ts">
@@ -67,6 +72,13 @@ export default defineComponent({
         dataIndex: "place",
         key: "place",
       },
+      {
+        title: "选课人数",
+        dataIndex: "StudentsCount",
+        key: "StudentsCount",
+      },
+
+
     ];
 
     const dataSource = ref([]);

@@ -5,13 +5,11 @@
         <span> {{ record?.Teacher?.name }}</span>
       </template>
       <template v-if="column.key === 'result'">
-        <span> {{ record?.StudentCourse?.result }}</span>
+        <span> {{ record?.Students?.[0]?.StudentCourse?.result || '未出成绩' }}</span>
       </template>
     </template>
   </a-table>
 </template>
-
-
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from "vue";
@@ -80,10 +78,10 @@ export default defineComponent({
       queryCourse();
     });
 
-    const checkednData = computed(() => {
-      return dataSource.value?.filter((e) => e?.StudentCourse !== null);
-    });
 
+    const checkednData = computed(() => {
+      return dataSource.value?.filter((e) => e?.Students?.length !== 0);
+    });
 
     return {
       checkednData,

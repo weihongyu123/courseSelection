@@ -2,6 +2,19 @@
   <div class="student">
     <a-space>
       <a-button type="primary" @click="showModal">添加</a-button>
+
+      <a-form layout="inline" :model="formParams" @finish="handleSearch">
+        <a-form-item>
+          <a-input v-model:value="formParams.name" placeholder="教师名称">
+          </a-input>
+        </a-form-item>
+
+        <a-form-item>
+          <a-button type="primary" html-type="submit">
+            查询
+          </a-button>
+        </a-form-item>
+      </a-form>
     </a-space>
     <a-table :dataSource="dataSource" :columns="columns">
       <template #bodyCell="{ column, record }">
@@ -111,6 +124,26 @@ export default defineComponent({
       major: "",
     });
 
+
+
+    // 搜索form
+    const formParams = ref({
+      name: ""
+    });
+
+    const handleSearch = () => {
+
+      const params = {}
+
+      for (const [key, value] of Object.entries(formParams.value)) {
+        if (value !== '' && value !== null && value !== undefined) {
+          params[key] = value
+        }
+      }
+
+      queryStudent(params)
+    }
+
     const onUpdate = (row: FormState) => {
       formState.value = row;
       visible.value = true;
@@ -157,8 +190,8 @@ export default defineComponent({
 
     const dataSource = ref([]);
 
-    const queryStudent = () => {
-      queryStudentList({})
+    const queryStudent = (params?: any) => {
+      queryStudentList(params || {})
         .then((res) => {
           if (res) dataSource.value = res.data;
         })
@@ -190,7 +223,9 @@ export default defineComponent({
       disabledCode,
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
-      onUpdatePassword
+      onUpdatePassword,
+      formParams,
+      handleSearch,
     };
   },
 });

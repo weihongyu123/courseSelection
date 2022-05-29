@@ -184,6 +184,9 @@ export default defineComponent({
       const params: any = formState.value;
       params.time = JSON.stringify(formState.value.time);
 
+
+    console.log(params)
+
       saveCourse(params)
         .then((res) => {
           if (res) queryCourse();

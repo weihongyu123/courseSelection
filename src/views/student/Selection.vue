@@ -114,7 +114,7 @@ export default defineComponent({
 
     const onUnchecked = (row: any) => {
       deleteCourse({
-        id: row?.StudentCourse?.id,
+        id: row?.Students?.[0]?.StudentCourse?.id,
       })
         .then((res) => {
           queryCourse();
@@ -128,7 +128,7 @@ export default defineComponent({
 
     // 列表查询
     const queryCourse = () => {
-      queryCourseList({ studentId: store.state.studentId})
+      queryCourseList({ studentId: store.state.studentId })
         .then((res) => {
           if (res) dataSource.value = res.data;
         })
@@ -142,11 +142,11 @@ export default defineComponent({
     });
 
     const checkednData = computed(() => {
-      return dataSource.value?.filter((e) => e?.StudentCourse !== null);
+      return dataSource.value?.filter((e) => e?.Students?.length !== 0);
     });
 
     const uncheckednData = computed(() => {
-      return dataSource.value?.filter((e) => e?.StudentCourse === null);
+      return dataSource.value?.filter((e) => e?.Students?.length === 0);
     });
 
     return {
